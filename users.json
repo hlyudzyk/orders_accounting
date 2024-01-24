@@ -1,0 +1,47 @@
+[
+  {
+    "userName": "dewitt.goodwin",
+    "password": "8y9e71nwm3d",
+    "joiningDate": "2024-01-24",
+    "dateOfBirth": "1971-07-26",
+    "id": "0b28a68b-5300-4e70-93bb-9901d521cc79",
+    "errors": [],
+    "isValid": false
+  },
+  {
+    "userName": "julianne.cruickshank",
+    "password": "blsfzguv2q1y8q",
+    "joiningDate": "2024-01-24",
+    "dateOfBirth": "1969-11-29",
+    "id": "10076eb9-1aef-493b-adf7-cc5bcdae1bf3",
+    "errors": [],
+    "isValid": false
+  },
+  {
+    "userName": "lucienne.rolfson",
+    "password": "qkom9s7tey6f",
+    "joiningDate": "2024-01-24",
+    "dateOfBirth": "1959-11-01",
+    "id": "94c36a56-1408-43bc-ae8a-73677540161a",
+    "errors": [],
+    "isValid": false
+  },
+  {
+    "userName": "darla.batz",
+    "password": "mj4urub42k",
+    "joiningDate": "2024-01-24",
+    "dateOfBirth": "2000-02-11",
+    "id": "3d6c3194-228b-4c2b-be53-8b334e7fc56c",
+    "errors": [],
+    "isValid": false
+  },
+  {
+    "userName": "ester.schmidt",
+    "password": "xa5kvmbscnn4mr",
+    "joiningDate": "2024-01-24",
+    "dateOfBirth": "1962-01-17",
+    "id": "5e0018ef-1f90-4569-a252-d3f87cad4a8f",
+    "errors": [],
+    "isValid": false
+  }
+]
