@@ -10,7 +10,6 @@ public class ServiceLocator {
     public static ServiceLocator getLocator(){
         if(locator == null) locator = new ServiceLocator();
         return locator;
-
     }
 
     public void addService(String serviceName, Service service){

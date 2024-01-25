@@ -1,12 +1,17 @@
-package services.json;
+package dataaccess.json;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.io.FileNotFoundException;
+import com.google.gson.reflect.TypeToken;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import services.Service;
 
 public class JsonSerializer implements Service {
@@ -30,18 +35,28 @@ public class JsonSerializer implements Service {
             e.printStackTrace();
         }
     }
+
     public <T> T deserialize(String json, Class<T> objectType) {
         return gson.fromJson(json, objectType);
     }
 
-    public <T> T deserializeFromFile(String filename, Class<T> objectType) {
-        try(FileReader reader = new FileReader(filename)) {
-            return gson.fromJson(reader, objectType);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public <T> Set<T> deserializeSetFromFile(String filename, Class<T> elementType) throws IOException {
+        ensureFileExists(filename);
+        return deserializeFromFile(filename, TypeToken.getParameterized(Set.class, elementType).getType());
     }
+
+    private void ensureFileExists(String filename) throws IOException {
+        Path path = Path.of(filename);
+        if (!Files.exists(path)) {
+            Files.createFile(path);
+        }
+    }
+
+    private <T> Set<T> deserializeFromFile(String filename, Type type) throws IOException {
+        try (FileReader reader = new FileReader(filename)) {
+            return gson.fromJson(reader, type);
+        }
+    }
+
 
 }

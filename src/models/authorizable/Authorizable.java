@@ -6,7 +6,7 @@ import models.Entity;
 import models.ErrorTemplates;
 import models.exceptions.EntityArgumentException;
 
-public class Authorizable extends Entity {
+public abstract class Authorizable extends Entity {
     private String userName;
     private String password;
     private final LocalDate joiningDate;
@@ -40,7 +40,7 @@ public class Authorizable extends Entity {
             errors.add(ErrorTemplates.MAX_LENGTH.getTemplate().formatted(templateName, 24));
         }
         var pattern = Pattern.compile("^[a-zA-Z0-9_]+$");
-        if (pattern.matcher(username).matches()) {
+        if (!pattern.matcher(username).matches()) {
             errors.add(ErrorTemplates.ONLY_LATIN.getTemplate().formatted(templateName, 24));
         }
 
