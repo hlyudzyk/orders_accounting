@@ -2,6 +2,7 @@ package models.authorizable;
 
 import java.time.LocalDate;
 import java.util.regex.Pattern;
+import javax.management.relation.Role;
 import models.Entity;
 import models.ErrorTemplates;
 import models.exceptions.EntityArgumentException;
@@ -9,6 +10,7 @@ import models.exceptions.EntityArgumentException;
 public abstract class Authorizable extends Entity {
     private String userName;
     private String password;
+    private Role role;
     private final LocalDate joiningDate;
     private final LocalDate dateOfBirth;
 
@@ -37,11 +39,14 @@ public abstract class Authorizable extends Entity {
         this.password = password;
     }
 
+
     public LocalDate getJoiningDate() {
         return joiningDate;
     }
 
 
-
+    public enum ROLE{
+        ADMIN,DRIVER,USER;
+    }
 
 }

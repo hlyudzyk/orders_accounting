@@ -15,6 +15,9 @@ public class OrdersRepository extends DataRepository<Order>
         this.dataContext = context;
     }
 
+    public void saveChanges() {
+        dataContext.saveChanges();
+    }
     @Override
     public void update(Order itemToUpdate) throws RuntimeException, IOException {
 

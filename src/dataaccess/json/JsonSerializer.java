@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 import services.Service;
 
@@ -21,7 +20,6 @@ public class JsonSerializer implements Service {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
         gsonBuilder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
-        gsonBuilder.setPrettyPrinting();
         this.gson = gsonBuilder.create();
     }
 
