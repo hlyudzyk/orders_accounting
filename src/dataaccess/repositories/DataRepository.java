@@ -27,8 +27,12 @@ public abstract class DataRepository<T extends Entity> {
     }
 
 
-    public void delete(UUID id) throws RuntimeException {
-        getEntities().remove(find(id));
+    public void delete(UUID id) {
+        Optional<T> optionalEntity = find(id);
+        if (optionalEntity.isPresent()) {
+            T entity = optionalEntity.get();
+            getEntities().remove(entity);
+        }
     }
 
     public Set<T> getAll() {

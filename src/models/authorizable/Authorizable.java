@@ -16,7 +16,7 @@ public abstract class Authorizable extends Entity {
         return dateOfBirth;
     }
 
-    public Authorizable(LocalDate dateOfBirth) {
+    protected Authorizable(LocalDate dateOfBirth) {
         this.joiningDate = LocalDate.now();
         this.dateOfBirth = dateOfBirth;
 
@@ -26,28 +26,7 @@ public abstract class Authorizable extends Entity {
         return userName;
     }
 
-
     public void setUserName(String username) {
-        final String templateName = "логіну";
-
-        if (username.isBlank()) {
-            errors.add(ErrorTemplates.REQUIRED.getTemplate().formatted(templateName));
-        }
-        if (username.length() < 4) {
-            errors.add(ErrorTemplates.MIN_LENGTH.getTemplate().formatted(templateName, 4));
-        }
-        if (username.length() > 24) {
-            errors.add(ErrorTemplates.MAX_LENGTH.getTemplate().formatted(templateName, 24));
-        }
-        var pattern = Pattern.compile("^[a-zA-Z0-9_]+$");
-        if (!pattern.matcher(username).matches()) {
-            errors.add(ErrorTemplates.ONLY_LATIN.getTemplate().formatted(templateName, 24));
-        }
-
-        if (!this.errors.isEmpty()) {
-            throw new EntityArgumentException(errors);
-        }
-
         this.userName = username;
     }
     public String getPassword() {
@@ -61,5 +40,8 @@ public abstract class Authorizable extends Entity {
     public LocalDate getJoiningDate() {
         return joiningDate;
     }
+
+
+
 
 }
