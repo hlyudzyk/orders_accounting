@@ -1,9 +1,15 @@
 package app.server;
 
+import static models.authorizable.Authorizable.*;
+
 import app.Configuration;
+import app.exceptions.BadRequestException;
 import dataaccess.json.JsonSerializer;
-import dataaccess.repositories.AuthorizableRepository;
+import dataaccess.repositories.AdminsRepository;
+import dataaccess.repositories.DataContext;
+import dataaccess.repositories.DriversRepository;
 import dataaccess.repositories.OrdersRepository;
+import dataaccess.repositories.UsersRepository;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -14,14 +20,17 @@ import java.net.Socket;
 
 public class Server implements Runnable{
     private final OrdersRepository ordersRepository;
-    AuthorizableRepository authorizableRepository;
+    private final DriversRepository driversRepository;
+    private final UsersRepository usersRepository;
+    private final AdminsRepository adminsRepository;
     OrdersController ordersController;
     JsonSerializer serializer;
-    public Server(AuthorizableRepository authorizableRepository,OrdersRepository ordersRepository,
-        JsonSerializer serializer) {
-        this.authorizableRepository = authorizableRepository;
+    public Server(DataContext dataContext,JsonSerializer serializer) {
         this.serializer = serializer;
-        this.ordersRepository = ordersRepository;
+        this.ordersRepository = new OrdersRepository(dataContext);
+        this.driversRepository = new DriversRepository(dataContext);
+        this.adminsRepository = new AdminsRepository(dataContext);
+        this.usersRepository = new UsersRepository(dataContext);
 
     }
 
@@ -44,35 +53,58 @@ public class Server implements Runnable{
             BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(clientSocket.getOutputStream()))
         ) {
-            this.ordersController = new OrdersController(ordersRepository,writer,reader,serializer);
-            String command = reader.readLine();
+            String permission = reader.readLine();
+            Role role = Role.valueOf(permission);
 
-            if (command != null) {
-                switch (command) {
-                    case "CREATE_ORDER":
-                        ordersController.createOrder();
-                        break;
-
-                    case "ORDER_HISTORY":
-                        ordersController.sendOrderHistory();
-                        break;
-
-                    default:
-                        System.out.println("400 BAD REQUEST");
-                        break;
-                }
+            switch (role) {
+                case USER:
+                    handleUser(clientSocket, reader, writer);
+                    break;
+                case ADMIN:
+                    handleAdmin(clientSocket, reader, writer);
+                    break;
+                case DRIVER:
+                    handleDriver(clientSocket, reader, writer);
+                    break;
+                default:
+                    break;
             }
-
-            writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                clientSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+        }
+    }
+
+    private void handleUser(Socket clientSocket, BufferedReader reader, BufferedWriter writer) throws IOException {
+        this.ordersController = new OrdersController(ordersRepository,writer,reader,serializer);
+        String command = reader.readLine();
+
+        if (command != null) {
+            Request request = serializer.deserialize(command,Request.class);
+
+            switch (request.requestType) {
+
+                case "CREATE_ORDER":
+                    ordersController.createOrder(request.requestData);
+                    break;
+
+                case "ORDER_HISTORY":
+                    ordersController.sendOrderHistory();
+                    break;
+
+                default:
+                    throw new BadRequestException();
             }
         }
+
+        writer.flush();
+    }
+
+    private void handleAdmin(Socket clientSocket, BufferedReader reader, BufferedWriter writer) throws IOException {
+        System.out.println("I'm handling admin");
+    }
+
+    private void handleDriver(Socket clientSocket, BufferedReader reader, BufferedWriter writer) throws IOException {
+        System.out.println("I'm handling driver");
     }
 
 }

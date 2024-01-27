@@ -10,18 +10,18 @@ import models.exceptions.EntityArgumentException;
 public abstract class Authorizable extends Entity {
     private String userName;
     private String password;
-    private Role role;
     private final LocalDate joiningDate;
+    protected final Role role;
     private final LocalDate dateOfBirth;
 
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    protected Authorizable(LocalDate dateOfBirth) {
+    protected Authorizable(Role role, LocalDate dateOfBirth) {
+        this.role = role;
         this.joiningDate = LocalDate.now();
         this.dateOfBirth = dateOfBirth;
-
     }
 
     public String getUserName() {
@@ -45,8 +45,18 @@ public abstract class Authorizable extends Entity {
     }
 
 
-    public enum ROLE{
+    public enum Role{
         ADMIN,DRIVER,USER;
     }
 
+    @Override
+    public String toString() {
+        return "Authorizable{" +
+            "userName='" + userName + '\'' +
+            ", password='" + password + '\'' +
+            ", joiningDate=" + joiningDate +
+            ", role=" + role +
+            ", dateOfBirth=" + dateOfBirth +
+            '}';
+    }
 }
