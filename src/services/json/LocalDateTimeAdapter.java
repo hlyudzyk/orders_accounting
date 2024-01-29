@@ -1,4 +1,4 @@
-package dataaccess.json;
+package services.json;
 
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonSerializer;

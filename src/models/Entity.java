@@ -1,30 +1,16 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public class Entity {
     protected final UUID id;
-    protected List<String> errors;
-    protected boolean isValid;
-
     protected Entity() {
-        errors = new ArrayList<>();
         this.id = UUID.randomUUID();
     }
 
     public UUID getId() {
         return id;
-    }
-
-    public boolean isValid() {
-        return errors.isEmpty();
-    }
-
-    public List<String> getErrors() {
-        return errors;
     }
 
     @Override

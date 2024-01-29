@@ -8,7 +8,7 @@ import models.ErrorTemplates;
 import models.exceptions.EntityArgumentException;
 
 public abstract class Authorizable extends Entity {
-    private String userName;
+    private String username;
     private String password;
     private final LocalDate joiningDate;
     protected final Role role;
@@ -18,18 +18,18 @@ public abstract class Authorizable extends Entity {
         return dateOfBirth;
     }
 
-    protected Authorizable(Role role, LocalDate dateOfBirth) {
+    protected Authorizable(Role role, LocalDate dateOfBirth,LocalDate joiningDate) {
         this.role = role;
-        this.joiningDate = LocalDate.now();
+        this.joiningDate = joiningDate;
         this.dateOfBirth = dateOfBirth;
     }
 
     public String getUserName() {
-        return userName;
+        return username;
     }
 
     public void setUserName(String username) {
-        this.userName = username;
+        this.username = username;
     }
     public String getPassword() {
         return password;
@@ -52,7 +52,7 @@ public abstract class Authorizable extends Entity {
     @Override
     public String toString() {
         return "Authorizable{" +
-            "userName='" + userName + '\'' +
+            "username='" + username + '\'' +
             ", password='" + password + '\'' +
             ", joiningDate=" + joiningDate +
             ", role=" + role +

@@ -23,7 +23,7 @@ public abstract class DataRepository<T extends Entity> {
     }
 
     public void insert(T itemToInsert) throws RuntimeException {
-        getEntities().add(itemToInsert);
+        entities.add(itemToInsert);
     }
 
 

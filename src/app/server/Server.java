@@ -4,10 +4,13 @@ import static models.authorizable.Authorizable.*;
 
 import app.Configuration;
 import app.exceptions.BadRequestException;
-import dataaccess.json.JsonSerializer;
+import app.server.controllers.AdminController;
+import app.server.controllers.DriverController;
+import app.server.controllers.OrdersController;
+import app.server.controllers.UserController;
+import services.json.JsonSerializer;
 import dataaccess.repositories.AdminsRepository;
 import dataaccess.repositories.DataContext;
-import dataaccess.repositories.DriversRepository;
 import dataaccess.repositories.OrdersRepository;
 import dataaccess.repositories.UsersRepository;
 import java.io.BufferedReader;
@@ -20,18 +23,20 @@ import java.net.Socket;
 
 public class Server implements Runnable{
     private final OrdersRepository ordersRepository;
-    private final DriversRepository driversRepository;
     private final UsersRepository usersRepository;
     private final AdminsRepository adminsRepository;
+    private final DataContext dataContext;
     OrdersController ordersController;
+    UserController userController;
+    AdminController adminController;
+    DriverController driverController;
     JsonSerializer serializer;
     public Server(DataContext dataContext,JsonSerializer serializer) {
         this.serializer = serializer;
+        this.dataContext = dataContext;
         this.ordersRepository = new OrdersRepository(dataContext);
-        this.driversRepository = new DriversRepository(dataContext);
-        this.adminsRepository = new AdminsRepository(dataContext);
         this.usersRepository = new UsersRepository(dataContext);
-
+        this.adminsRepository = new AdminsRepository(dataContext);
     }
 
     @Override
@@ -76,31 +81,50 @@ public class Server implements Runnable{
 
     private void handleUser(Socket clientSocket, BufferedReader reader, BufferedWriter writer) throws IOException {
         this.ordersController = new OrdersController(ordersRepository,writer,reader,serializer);
+        this.userController = new UserController(usersRepository,writer,reader,serializer);
         String command = reader.readLine();
 
         if (command != null) {
             Request request = serializer.deserialize(command,Request.class);
 
-            switch (request.requestType) {
-
+            switch (request.header) {
                 case "CREATE_ORDER":
                     ordersController.createOrder(request.requestData);
                     break;
-
                 case "ORDER_HISTORY":
-                    ordersController.sendOrderHistory();
+                    ordersController.sendOrderHistory(request.requestData);
                     break;
+                case "REGISTER":
+                    userController.registerUser(request.requestData);
+                    break;
+                case "LOGIN":
+                    userController.loginUser(request.requestData);
+                    break;
+                default:
+                    throw new BadRequestException();
+            }
+        }
+        dataContext.saveChanges();
+        writer.flush();
+    }
 
+    private void handleAdmin(Socket clientSocket, BufferedReader reader, BufferedWriter writer) throws IOException {
+        this.adminController = new AdminController(ordersRepository,adminsRepository,writer,reader,serializer);
+        String command = reader.readLine();
+
+        if (command != null) {
+            Request request = serializer.deserialize(command,Request.class);
+
+            switch (request.header) {
+                case "REGISTER":
+                    adminController.registerAdmin(request.requestData);
+                    break;
                 default:
                     throw new BadRequestException();
             }
         }
 
         writer.flush();
-    }
-
-    private void handleAdmin(Socket clientSocket, BufferedReader reader, BufferedWriter writer) throws IOException {
-        System.out.println("I'm handling admin");
     }
 
     private void handleDriver(Socket clientSocket, BufferedReader reader, BufferedWriter writer) throws IOException {

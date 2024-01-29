@@ -6,14 +6,17 @@ import java.util.UUID;
 
 public class Order extends Entity {
     private final UUID userId;
-    private final UUID driverId;
+    private UUID driverId;
     private LocalDateTime createdAt;
     private LocalDateTime finishedAt;
+    private String locationFrom;
     private String locationTo;
 
-    public Order(UUID userId, UUID driverId) {
+    public Order(UUID userId,String locationFrom,String locationTo) {
         this.userId = userId;
-        this.driverId = driverId;
+        this.locationFrom = locationFrom;
+        this.locationTo = locationTo;
+        this.createdAt = LocalDateTime.now();
     }
 
     public UUID getUserId() {
@@ -28,10 +31,6 @@ public class Order extends Entity {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
     public LocalDateTime getFinishedAt() {
         return finishedAt;
     }
@@ -42,6 +41,10 @@ public class Order extends Entity {
 
     public String getLocationTo() {
         return locationTo;
+    }
+
+    public void setDriverId(UUID driverId) {
+        this.driverId = driverId;
     }
 
     public void setLocationTo(String locationTo) {
